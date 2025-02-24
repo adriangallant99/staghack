@@ -33,7 +33,7 @@ Make sure you have Python installed on your system. You can download it from [py
 
 4. **Install the required libraries:**
     ```bash
-    pip install pandas numpy matplotlib
+    pip install pandas numpy matplotlib pytest
     ```
 
 ### Running the Project
