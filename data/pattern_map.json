@@ -1,0 +1,6 @@
+{
+    "Appointment.*\\.csv": "appointment_df",
+    "New Patient.*\\.csv": "new_patient_df",
+    "Provider Schedule.*\\.csv": "provider_schedule_df",
+    "Provider State.*\\.csv": "provider_state_df"
+}
