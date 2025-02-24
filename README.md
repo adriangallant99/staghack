@@ -39,7 +39,7 @@ Make sure you have Python installed on your system. You can download it from [py
 ### Running the Project
 To run the project, execute the main script:
 ```bash
-python src/analysis/main.py
+python src/main.py
 ```
 
 ## Usage
