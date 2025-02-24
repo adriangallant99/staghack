@@ -74,6 +74,9 @@ staghack/
 ├── src/
 │   ├── __init__.py
 │   ├── analysis/
+│   ├── preprocessing/
+│   ├── scheduling/
+│   ├── util/
 │   └── main.py
 └── tests/
 ```
