@@ -21,36 +21,41 @@ from scheduling.new_patient_scheduler import NewPatientScheduler
 from util.debug import Debug
 from util.utility import read_json
 
-# Maps CSV files to corresponding DataFrames
-pattern_mapping = read_json('data/pattern_map.json')
 
-# Create preprocessor and load data
-preprocessor = Preprocessor("data/")
-dfs = preprocessor.read_csvs(pattern_mapping)
+def main():
+    # Maps CSV files to corresponding DataFrames
+    pattern_mapping = read_json('data/pattern_map.json')
 
-processed_appointments = preprocessor.process_appointment_times()
+    # Create preprocessor and load data
+    preprocessor = Preprocessor("data/")
+    dfs = preprocessor.read_csvs(pattern_mapping)
 
-provider_availability = preprocessor.setup_provider_schedule(month=1, year=2025)
+    processed_appointments = preprocessor.process_appointment_times()
 
-# Initialize and use the calendar populator
-calendar = CalendarPopulator(provider_availability, processed_appointments)
-populated_calendar = calendar.populate_calendar()
-print(populated_calendar[populated_calendar['APPOINTMENTID'].notna()])
+    provider_availability = preprocessor.setup_provider_schedule(month=1, year=2025)
 
-new_patient_df = preprocessor.get_dataframe('new_patient_df')
+    # Initialize and use the calendar populator
+    calendar = CalendarPopulator(provider_availability, processed_appointments)
+    populated_calendar = calendar.populate_calendar()
+    print(populated_calendar[populated_calendar['APPOINTMENTID'].notna()])
 
-new_patient_scheduler = NewPatientScheduler()
+    new_patient_df = preprocessor.get_dataframe('new_patient_df')
 
-debug = Debug()
-debug.set_debug(False)
-if debug.get_debug():
-    # When debugging, only schedule two test patients
-    new_patient_df = new_patient_df[new_patient_df['PATIENTID'].isin([22905, 22922])]
+    new_patient_scheduler = NewPatientScheduler()
 
-updated_calendar = new_patient_scheduler.schedule_new_patients(populated_calendar, new_patient_df)
+    debug = Debug()
+    debug.set_debug(True)
+    if debug.get_debug():
+        # When debugging, only schedule two test patients
+        new_patient_df = new_patient_df[new_patient_df['PATIENTID'].isin([22905, 22922])]
 
-print('Finished scheduling new patients')
-print('Program complete')
+    updated_calendar = new_patient_scheduler.schedule_new_patients(populated_calendar, new_patient_df)
+
+    print('Finished scheduling new patients')
+    print('Program complete')
+
+if __name__ == '__main__':
+    main()
 
 # TODO: Test to see what happens when provider has 5 appointments scheduled in a single day
 # TODO: Turn the appointment tracker into a file so the data can be saved and loaded?
