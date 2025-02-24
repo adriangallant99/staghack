@@ -7,7 +7,6 @@ Classes:
     CalendarPopulator: Populates a calendar with provider availability and scheduled appointments.
     NewPatientScheduler: Schedules new patients into the populated calendar.
     Debug: Manages debug settings.
-    Utility: Provides utility functions for reading JSON files.
 
 Functions:
     main: The main function that orchestrates the preprocessing, calendar population, and new patient scheduling.
@@ -20,11 +19,10 @@ from preprocessing.preprocessor import Preprocessor
 from preprocessing.populator import CalendarPopulator
 from scheduling.new_patient_scheduler import NewPatientScheduler
 from util.debug import Debug
-from util.utility import Utility
+from util.utility import read_json
 
 # Maps CSV files to corresponding DataFrames
-util = Utility()
-pattern_mapping = util.read_json('data/pattern_map.json')
+pattern_mapping = read_json('data/pattern_map.json')
 
 # Create preprocessor and load data
 preprocessor = Preprocessor("data/")
