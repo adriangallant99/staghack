@@ -14,6 +14,7 @@ Functions:
 Usage:
     Run this module to preprocess appointment data, populate the calendar, and schedule new patients.
 """
+import pandas as pd
 
 from preprocessing.preprocessor import Preprocessor
 from preprocessing.populator import CalendarPopulator
@@ -47,7 +48,13 @@ def main():
     debug.set_debug(True)
     if debug.get_debug():
         # When debugging, only schedule two test patients
-        new_patient_df = new_patient_df[new_patient_df['PATIENTID'].isin([22905, 22922])]
+        # new_patient_df = new_patient_df[new_patient_df['PATIENTID'].isin([22905, 22922])]
+        populated_calendar = populated_calendar[populated_calendar['PROVIDERID'].isin([202])]
+        new_patient_df = pd.DataFrame({
+            'PATIENTID': [99990, 99991,99992,99993,99994,99995],
+            'STATE': ['CT', 'CT','CT','CT','CT','CT'],
+            'REGISTRATIONDATE': ['2025-01-10', '2025-01-10','2025-01-10','2025-01-10','2025-01-10','2025-01-10'],
+            'PROGRAM': ['SUD', 'SUD','SUD','SUD','SUD','SUD']})
 
     updated_calendar = new_patient_scheduler.schedule_new_patients(populated_calendar, new_patient_df)
 
@@ -58,6 +65,8 @@ if __name__ == '__main__':
     main()
 
 # TODO: Test to see what happens when provider has 5 appointments scheduled in a single day
+# TODO: If max appointments is 5 per provider per day, what happens if a provider has 5 appointments already scheduled?
+#       Should we increment to their next day on the calendar?
 # TODO: Turn the appointment tracker into a file so the data can be saved and loaded?
 # TODO: Should appointments be booked on same day as registration?
 #       We'd need a timestamp of registration to know

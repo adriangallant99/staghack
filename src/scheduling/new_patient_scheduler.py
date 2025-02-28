@@ -75,6 +75,8 @@ class NewPatientScheduler:
         Returns:
             pd.DataFrame: the dataframe of patients, but sorted
         """
+        print('Sorting new patients by registration date and patient id...')
         sorted_new_patient_data_df = new_patient_df.sort_values(by=['REGISTRATIONDATE', 'PATIENTID', ], ascending=True)
+        print('New patients sorted')
 
         return sorted_new_patient_data_df

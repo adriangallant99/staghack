@@ -77,6 +77,9 @@ class AppointmentScheduler:
         for _, available_time_slot in available_time_slots_df.iterrows():
             if self.new_appointment_tracker.check_if_provider_has_availibility(available_time_slot):
                 max_appointment_id = current_calendar_df['APPOINTMENTID'].max()
+                if pd.isna(max_appointment_id):
+                    # can this be a sequence number?
+                    max_appointment_id = 10000
                 new_appointment_id = max_appointment_id + 1
                 self.appointment_data_handler.update_appointment_data_table(new_appointment_id, available_time_slot)
                 current_calendar_df = self.calendar_manager.update_calendar(new_appointment_id, available_time_slot, current_calendar_df)
