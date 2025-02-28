@@ -64,7 +64,6 @@ def main():
 if __name__ == '__main__':
     main()
 
-# TODO: Test to see what happens when provider has 5 appointments scheduled in a single day
 # TODO: If max appointments is 5 per provider per day, what happens if a provider has 5 appointments already scheduled?
 #       Should we increment to their next day on the calendar?
 # TODO: Turn the appointment tracker into a file so the data can be saved and loaded?
