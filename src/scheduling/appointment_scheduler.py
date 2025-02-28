@@ -21,9 +21,13 @@ Functions:
 
 import pandas as pd
 
+from preprocessing.preprocessor import Preprocessor
+
 from scheduling.appointment_data_handler import AppointmentDataHandler
 from scheduling.calendar_manager import CalendarManager
 from scheduling.new_appointment_tracker import NewAppointmentTracker
+
+from util.utility import read_json
 
 class AppointmentScheduler:
     """
@@ -31,10 +35,12 @@ class AppointmentScheduler:
     """
 
     def __init__(self, new_appointment_tracker:NewAppointmentTracker, analysis):
-        self.new_appointment_tracker = new_appointment_tracker
-        self.calendar_manager = CalendarManager()
         self.appointment_data_handler = AppointmentDataHandler()
+        self.calendar_manager = CalendarManager()
+        self.preprocessor = Preprocessor("data/")
         self.analysis = analysis
+        self.new_appointment_tracker = new_appointment_tracker
+
 
     def find_earliest_appointments(self, new_patient:pd.DataFrame, current_calendar_df:pd.DataFrame) -> pd.DataFrame:
             """
@@ -76,11 +82,9 @@ class AppointmentScheduler:
         """
         for _, available_time_slot in available_time_slots_df.iterrows():
             if self.new_appointment_tracker.check_if_provider_has_availibility(available_time_slot):
-                max_appointment_id = current_calendar_df['APPOINTMENTID'].max()
-                if pd.isna(max_appointment_id):
-                    # can this be a sequence number?
-                    max_appointment_id = 10000
-                new_appointment_id = max_appointment_id + 1
+                # BETTER TO GO TO DATABASE INSTEAD?
+                max_appointment_id = self.__get_max_appointment_id()
+                new_appointment_id = int(max_appointment_id + 1)
                 self.appointment_data_handler.update_appointment_data_table(new_appointment_id, available_time_slot)
                 current_calendar_df = self.calendar_manager.update_calendar(new_appointment_id, available_time_slot, current_calendar_df)
                 self.__update_new_appointment_tracker(new_appointment_id, current_calendar_df)
@@ -116,3 +120,34 @@ class AppointmentScheduler:
             'program' : new_patient['PROGRAM'],
             'appointment_start_time' : available_time_slot['START_DATETIME']
         })
+
+    def __get_max_appointment_id(self, ) -> int:
+        """
+        Retrieves the maximum appointment ID from the appointments DataFrame.
+
+        This method fetches the appointments DataFrame and returns the highest value
+        in the 'APPOINTMENTID' column.
+
+        Returns:
+            int: The maximum appointment ID.
+        """
+        appointment_df:pd.DataFrame = self.__get_appointments_df()
+        return appointment_df['APPOINTMENTID'].max()
+
+    def __get_appointments_df(self, ) -> pd.DataFrame:
+        """
+        Retrieves the appointments DataFrame.
+
+        This method reads the necessary CSV files and returns the DataFrame
+        containing appointment data.
+
+        Returns:
+            pd.DataFrame: The DataFrame containing appointment data.
+        """
+        # Maps CSV files to corresponding DataFrames
+        pattern_mapping = read_json('data/pattern_map.json')
+
+        # Create preprocessor and load data
+        preprocessor = Preprocessor("data/")
+        dfs = preprocessor.read_csvs(pattern_mapping)
+        return dfs['appointment_df']

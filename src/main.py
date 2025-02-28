@@ -45,7 +45,7 @@ def main():
     new_patient_scheduler = NewPatientScheduler()
 
     debug = Debug()
-    debug.set_debug(True)
+    debug.set_debug(False)
     if debug.get_debug():
         # When debugging, only schedule two test patients
         # new_patient_df = new_patient_df[new_patient_df['PATIENTID'].isin([22905, 22922])]

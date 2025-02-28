@@ -6,6 +6,11 @@ import calendar
 from datetime import datetime, timedelta
 
 class Preprocessor:
+    """
+    The Preprocessor class is responsible for reading and preprocessing the input data.
+    It can read multiple CSV files, join provider schedule data with state data, and process appointment times.
+    """
+
     def __init__(self, folderpath=None):
         """
         Initialize the Preprocessor with a folder path.
